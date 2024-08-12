@@ -1,0 +1,82 @@
+    Graphics gg = CreateGraphics();
+    SolidBrush bb = new SolidBrush(Color.Blue);
+    SolidBrush rb = new SolidBrush(Color.Red);
+    Random obj = new Random();
+    int n = 25;
+    int[,] cluster = new int[2 * n + 1, 2 * n + 1];
+
+    //DRAW the cluster and place the seed at the center
+
+    for (int i = 0; i <= 2 * n; i++)
+    {
+        for (int j = 0; j <= 2 * n; j++)
+        {
+            if (i == n && j == n) //Center point
+            {
+                gg.FillEllipse(rb, 200 + j * 5, 100 + i * 5, 5, 5);
+                cluster[i, j] = 1;   //occupied
+            }
+            else
+            {
+                gg.FillEllipse(bb, 200 + j * 5, 100 + i * 5, 5, 5);
+                cluster[i, j] = 0;   //unoccupied
+            }
+        }
+    }
+    // Let the cluster to grow like DLA
+
+    int x, y, check = 0;
+    double prob, count = 0;
+    while (true)
+    {
+        System.Threading.Thread.Sleep(1);
+
+
+        x = obj.Next(0, 2 * n + 1);  // Column number of any site
+        y = obj.Next(0, 2 * n + 1);  //Row number of any site
+
+    Top:   // a particular location in coding
+
+        // check either this x,y are perimeter sites or not  (particles are generated at perimeter sites or not)
+        if (y > 0)
+            if (cluster[y - 1, x] == 1)
+            {
+                cluster[y, x] = 1; check++;
+                gg.FillEllipse(rb, 200 + x * 5, 100 + y * 5, 5, 5);
+            }
+
+        if (y < 2 * n)
+            if (cluster[y + 1, x] == 1)
+            {
+                cluster[y, x] = 1; check++;
+                gg.FillEllipse(rb, 200 + x * 5, 100 + y * 5, 5, 5);
+            }
+
+        if (x > 0)
+            if (cluster[y, x - 1] == 1)
+            {
+                cluster[y, x] = 1; check++;
+                gg.FillEllipse(rb, 200 + x * 5, 100 + y * 5, 5, 5);
+            }
+
+        if (x < 2 * n)
+            if (cluster[y, x + 1] == 1)
+            {
+                cluster[y, x] = 1; check++;
+                gg.FillEllipse(rb, 200 + x * 5, 100 + y * 5, 5, 5);
+            }
+
+        //Generate random position of random walker and after this we will go to top to ensure to stick it to the cluster
+        if (check == 0)
+        {
+            prob = obj.NextDouble();
+            if (prob < 0.25) if (x < 2 * n) x++;
+            if (prob >= 0.25 && prob < 0.5) if(x > 0) x--;
+            if (prob >= 0.5 && prob < 0.75) if (y < 2 * n) y++;
+            if (prob >= 0.75) if (y > 0) y--;
+        }
+        if (check == 0) goto Top;    //goto a particular position in coding
+        else
+        check = 0;
+    }
+}
