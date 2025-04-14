@@ -1,0 +1,93 @@
+// The 'Person' class defines the structure for a person object. 
+// This class holds the personal details for each individual.
+class Person 
+{
+    // Person's name
+    public string personName { get; set; }   
+    // City where the person resides
+    public string city { get; set; }
+    // Block of the city where the person resides
+    public string block { get; set; }   
+    // Street name of the person's address
+    public string street { get; set; }
+    // House number in the street
+    public string HouseNo { get; set; }
+    // State or province where the person resides
+    public string state { get; set; } 
+}
+
+// The 'personData' class manages a list of 'Person' objects. 
+// This class helps us to store, manage, and manipulate the collection of people.
+class personData
+{
+    // List to hold all the person objects
+    public List<Person> personList;
+
+    // Constructor to initialize the personList with some default values
+    public personData()
+    {
+        // Initializing the list with pre-defined people
+        personList = new List<Person>(){
+            // Adding a new Person object with sample details
+            new Person{ personName = "John Doe", city = "New York", block = "B1", street = "5th Ave", HouseNo = "101", state = "NY" },
+            new Person{ personName = "Jane Smith", city = "Los Angeles", block = "B2", street = "Sunset Blvd", HouseNo = "202", state = "CA" },
+            new Person{ personName = "Sam Brown", city = "Chicago", block = "B3", street = "Michigan Ave", HouseNo = "303", state = "IL" }
+        };
+
+        // Adding another person dynamically to the list
+        personList.Add(new Person{ personName = "Alice Johnson", city = "Houston", block = "B4", street = "Main St", HouseNo = "404", state = "TX" });
+        
+        // Removing the first person (John Doe) from the list
+        personList.RemoveAt(0); // This is just to manipulate the list for testing
+    }
+}
+
+// Main class where program execution starts
+internal class Program
+{
+    // The Main method is the entry point for the application. 
+    // It handles the user input, performs search, and displays the results.
+    private static void Main(string[] args)
+    { 
+        // Prompt the user to enter a name for the search
+        Console.WriteLine("Enter the name of the person you want to search for:");
+        
+        // Capture the user's input from the console
+        string searchName = Console.ReadLine();
+
+        // Create an instance of personData to access the list of people
+        personData personData = new personData();
+
+        // Start searching through the list of people
+        foreach (var person in personData.personList)
+        {
+            // Check if the current person's name matches the search term
+            if(person.personName == searchName)
+            {
+                // If a match is found, display the person's details in a formatted way
+                Console.WriteLine($"{person.personName} {person.city} {person.block}");
+                
+                // End the search once we find a match (no need to check further)
+                return;
+            }
+        }
+
+        // If no match is found after looping through the entire list
+        Console.WriteLine("PERSON NOT FOUND");
+    }
+}
+
+//✅ Two ways to properly print a person:
+✅ Option 1: Print selected properties
+
+Console.WriteLine($"{person.personName}, {person.city}, {person.block}");
+
+You're doing this already. It's direct and works fine.
+✅ Option 2: Override ToString() in the Person class
+
+Add this inside your Person class:
+
+public override string ToString()
+{
+    return $"Name: {personName}, City: {city}, Block: {block}, Street: {street}, House: {HouseNo}, State: {state}";
+}
